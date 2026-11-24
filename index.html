@@ -11,8 +11,8 @@
 <style>
   :root{
     --night:#060b1f; --navy:#0d1b3d; --royal:#1b2f6b;
-    --gold:#d9b45b; --gold-d:#9c7a2e; --silver:#cfd8ee;
-    --parch:#efe0b8; --parch-d:#d9c38a; --ink:#2b1d0e; --wax:#7d1520;
+    --gold:#9fb0d4; --gold-d:#7a6a45; --silver:#cfd8ee;
+    --parch:#efe0b8; --parch-d:#d9c38a; --ink:#2b1d0e; --wax:#5a0f1a;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
@@ -31,12 +31,18 @@
   .moon{
     position:fixed;top:6vh;right:8vw;width:clamp(70px,12vw,140px);aspect-ratio:1;border-radius:50%;z-index:0;
     background:radial-gradient(circle at 35% 35%,#fff,#e8eeff 55%,#b9c6ec);
-    box-shadow:0 0 60px 20px rgba(200,215,255,.35),0 0 160px 60px rgba(120,150,255,.2);
+    box-shadow:0 0 50px 14px rgba(170,190,240,.28),0 0 200px 80px rgba(90,120,220,.15);opacity:.9;
   }
   .castle{position:fixed;left:0;right:0;bottom:0;width:100%;height:42vh;z-index:1;pointer-events:none}
-  .castle .win{fill:#ffcf6b;animation:flick 3s infinite alternate}
+  .castle .win{fill:#8fa6d9;animation:flick 3s infinite alternate}
   .castle .win:nth-child(2n){animation-delay:.8s}.castle .win:nth-child(3n){animation-delay:1.7s}
-  @keyframes flick{from{opacity:.55}to{opacity:1}}
+  @keyframes flick{0%{opacity:.15}20%{opacity:.9}45%{opacity:.3}70%{opacity:.8}100%{opacity:.2}}
+  .vig{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,6,.75) 100%)}
+  .fog{position:fixed;left:-50%;width:200%;height:34vh;bottom:0;z-index:3;pointer-events:none;
+    background:radial-gradient(ellipse at 30% 60%,rgba(170,185,225,.16),transparent 60%),radial-gradient(ellipse at 75% 50%,rgba(170,185,225,.12),transparent 55%);
+    animation:drift 40s linear infinite alternate}
+  .fog.b{height:22vh;opacity:.8;animation-duration:60s;animation-direction:alternate-reverse}
+  @keyframes drift{from{transform:translateX(0)}to{transform:translateX(25%)}}
 
   /* ---------- gate ---------- */
   #gate{
@@ -47,14 +53,14 @@
   #gate .pre{font-family:'Cinzel',serif;letter-spacing:.35em;font-size:.8rem;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}
   #gate h1{
     font-family:'Cinzel Decorative',serif;font-weight:700;color:var(--parch);
-    font-size:clamp(1.8rem,6vw,3.6rem);line-height:1.2;text-shadow:0 0 25px rgba(217,180,91,.4);
+    font-size:clamp(1.8rem,6vw,3.6rem);line-height:1.2;text-shadow:0 0 30px rgba(150,175,235,.45);
   }
   #gate p{margin:1rem 0 2rem;font-style:italic;font-size:1.15rem;color:var(--silver);max-width:30rem}
   .seal{
     width:112px;height:112px;border-radius:50%;border:0;cursor:pointer;position:relative;
-    background:radial-gradient(circle at 35% 30%,#b3242f,var(--wax) 60%,#4a0a12);
+    background:radial-gradient(circle at 35% 30%,#6b1420,var(--wax) 55%,#220509);
     box-shadow:0 6px 22px rgba(0,0,0,.6),inset 0 -4px 8px rgba(0,0,0,.4),inset 0 3px 6px rgba(255,150,150,.3);
-    color:#e9b7a0;font-family:'Cinzel Decorative',serif;font-size:2.6rem;
+    color:#c3cbe0;font-family:'Cinzel Decorative',serif;font-size:2.6rem;
     animation:pulse 2.4s infinite ease-in-out;
   }
   .seal::before{content:"";position:absolute;inset:10px;border-radius:50%;border:2px dashed rgba(240,170,150,.45)}
@@ -133,6 +139,7 @@
 
 <div id="stars"></div>
 <div class="moon"></div>
+<div class="vig"></div><div class="fog"></div><div class="fog b"></div>
 
 <!-- Castillo -->
 <svg class="castle" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -178,11 +185,11 @@
 
 <!-- Portal de entrada -->
 <section id="gate">
-  <div class="pre">⚜ Crónica de un reino bajo la luna ⚜</div>
+  <div class="pre">⚜ Sellado en la oscuridad ⚜</div>
   <h1>Una carta<br>para la princesa Abid</h1>
-  <p>Un mensajero cruzó los campos de noche para traerte estas palabras. Rompe el sello para leerlas.</p>
+  <p>Alguien que te sigue desde la sombra dejó esto a tu paso. Es solo para tus ojos. Rompe el sello si te atreves.</p>
   <button class="seal" id="open" aria-label="Romper el sello y abrir la carta">⚜</button>
-  <small>Toca el sello</small>
+  <small>Rompe el sello</small>
 </section>
 
 <main id="letter">
@@ -190,7 +197,7 @@
     <header class="head">
       <div class="crest">⚜</div>
       <h2>Para la princesa Abid</h2>
-      <div class="sub">Escrito bajo la luz de la luna</div>
+      <div class="sub">Escrito en la sombra, bajo la luna</div>
     </header>
 
     <div class="orn">✦</div>
@@ -198,11 +205,11 @@
     <div class="frame">
       <figure><img src="princesa.jpg" alt="La princesa sobre su corcel blanco bajo la luna llena, con un jinete encapuchado que la sigue desde la sombra"></figure>
     </div>
-    <figcaption>La princesa cabalga bajo la luna, y alguien la cuida desde la sombra.</figcaption>
+    <figcaption>Ella cabalga bajo la luna. Alguien la sigue, sin ser visto.</figcaption>
 
     <div class="orn">✦</div>
 
-    <p class="intro">Escucha, princesa, lo que la noche tiene para decirte:</p>
+    <p class="intro">Escucha, princesa. La noche guarda algo que decirte:</p>
 
     <div class="stanza reveal">
       <p>La luna y la noche,</p>
@@ -242,13 +249,13 @@
     <div class="orn">✦</div>
 
     <section class="music">
-      <h3>El canto del juglar</h3>
-      <p>Una melodía para acompañar tu lectura.</p>
+      <h3>El eco de la sombra</h3>
+      <p>Que suene mientras lees.</p>
       <div class="player" id="player"></div>
       <a href="https://youtu.be/oLEWz1r5zcI" target="_blank" rel="noopener">Si no suena, ábrela aquí</a>
     </section>
 
-    <div class="sign">Con respeto y cariño,<span>⚜ Tu caballero de la sombra ⚜</span></div>
+    <div class="sign">Sin rostro, pero siempre cerca,<span>⚜ El caballero sin nombre ⚜</span></div>
   </article>
 </main>
 
