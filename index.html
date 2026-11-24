@@ -69,7 +69,7 @@
   #gate small{display:block;margin-top:1rem;font-family:'Cinzel',serif;letter-spacing:.2em;font-size:.72rem;color:var(--gold)}
 
   /* ---------- letter ---------- */
-  main{position:relative;z-index:5;padding:5vh 1rem 46vh;opacity:0;transition:opacity 1.5s ease .4s}
+  main{position:relative;z-index:5;padding:5vh 1rem 46vh;opacity:0;transition:opacity .6s ease}
   main.show{opacity:1}
   .scroll{
     max-width:720px;margin:0 auto;position:relative;color:var(--ink);
@@ -119,18 +119,31 @@
   .shout{font-family:'Cinzel',serif;font-weight:600;color:var(--wax);letter-spacing:.06em}
   .last{font-style:italic}
 
-  .music{
-    margin-top:1rem;text-align:center;padding:1.2rem;border:1px solid var(--gold-d);border-radius:6px;
-    background:rgba(70,40,10,.12);
-  }
-  .music h3{font-family:'Cinzel',serif;font-size:.95rem;letter-spacing:.25em;text-transform:uppercase;color:#4a1a1a;margin-bottom:.4rem}
-  .music p{font-style:italic;color:#5b4524;margin-bottom:.8rem}
-  .player{position:relative;aspect-ratio:16/9;max-width:480px;margin:0 auto;border:3px solid #3a2a10;border-radius:3px;overflow:hidden;background:#000}
-  .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-  .music a{display:inline-block;margin-top:.6rem;color:var(--wax);font-size:.95rem}
 
   .sign{text-align:right;font-style:italic;font-size:1.25rem;color:#4a1a1a;margin-top:2rem}
   .sign span{display:block;font-family:'Cinzel Decorative',serif;font-style:normal;font-size:1rem;color:var(--gold-d);margin-top:.2rem}
+
+  .photo{opacity:0;transform:scale(.94);transition:opacity 1.6s ease,transform 1.6s ease}
+  .photo.in{opacity:1;transform:none}
+  figcaption{opacity:0;transition:opacity 1.6s ease .8s}
+  .photo.in + figcaption{opacity:1}
+
+  /* apertura */
+  .flash{position:fixed;inset:0;z-index:30;pointer-events:none;opacity:0;
+    background:radial-gradient(circle at 50% 55%,#fff 0%,rgba(190,205,255,.85) 25%,rgba(40,60,140,0) 70%)}
+  .flash.go{animation:flash 1.6s ease-out forwards}
+  @keyframes flash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
+  .seal.break{animation:crack 1s ease-in forwards}
+  @keyframes crack{0%{transform:scale(1)}15%{transform:scale(1.15) rotate(-6deg)}30%{transform:scale(1.1) rotate(6deg)}
+    100%{transform:scale(2.6);opacity:0;filter:blur(6px)}}
+  #gate.leaving h1,#gate.leaving p,#gate.leaving .pre,#gate.leaving small{opacity:0;transform:translateY(-14px);transition:all .8s ease}
+  .scroll.unroll{animation:unroll 2.6s cubic-bezier(.22,.7,.2,1) both}
+  @keyframes unroll{from{clip-path:inset(-20px -20px 100% -20px);transform:translateY(-30px)}
+    to{clip-path:inset(-120px);transform:none}}
+  #mute{position:fixed;right:14px;bottom:14px;z-index:25;width:42px;height:42px;border-radius:50%;cursor:pointer;
+    border:1px solid rgba(159,176,212,.5);background:rgba(6,11,31,.7);color:var(--silver);font-size:1.1rem;opacity:0;pointer-events:none;transition:opacity 1s}
+  #mute.on{opacity:.8;pointer-events:auto}#mute:hover{opacity:1}
+  #bgm{position:fixed;left:-9999px;top:0;width:220px;height:220px;border:0}
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
 </style>
@@ -183,6 +196,9 @@
   <rect x="0" y="385" width="1200" height="15" fill="#03060f"/>
 </svg>
 
+<div class="flash" id="flash"></div>
+<button id="mute" aria-label="Silenciar o activar la música">♪</button>
+
 <!-- Portal de entrada -->
 <section id="gate">
   <div class="pre">⚜ Sellado en la oscuridad ⚜</div>
@@ -199,13 +215,6 @@
       <h2>Para la princesa Abid</h2>
       <div class="sub">Escrito en la sombra, bajo la luna</div>
     </header>
-
-    <div class="orn">✦</div>
-
-    <div class="frame">
-      <figure><img src="princesa.jpg" alt="La princesa sobre su corcel blanco bajo la luna llena, con un jinete encapuchado que la sigue desde la sombra"></figure>
-    </div>
-    <figcaption>Ella cabalga bajo la luna. Alguien la sigue, sin ser visto.</figcaption>
 
     <div class="orn">✦</div>
 
@@ -248,12 +257,12 @@
 
     <div class="orn">✦</div>
 
-    <section class="music">
-      <h3>El eco de la sombra</h3>
-      <p>Que suene mientras lees.</p>
-      <div class="player" id="player"></div>
-      <a href="https://youtu.be/oLEWz1r5zcI" target="_blank" rel="noopener">Si no suena, ábrela aquí</a>
-    </section>
+    <div class="frame photo">
+      <figure><img src="princesa.jpg" alt="La princesa sobre su corcel blanco bajo la luna llena, con un jinete encapuchado que la sigue desde la sombra"></figure>
+    </div>
+    <figcaption>Ella cabalga bajo la luna. Alguien la sigue, sin ser visto.</figcaption>
+
+    <div class="orn">✦</div>
 
     <div class="sign">Sin rostro, pero siempre cerca,<span>⚜ El caballero sin nombre ⚜</span></div>
   </article>
@@ -269,22 +278,39 @@
     sky.appendChild(s);
   }
 
-  // Abrir carta + música (el clic permite el autoplay)
-  document.getElementById('open').addEventListener('click', () => {
-    document.getElementById('gate').classList.add('gone');
-    document.body.classList.remove('locked');
-    document.getElementById('letter').classList.add('show');
-    window.scrollTo(0, 0);
-    document.getElementById('player').innerHTML =
-      '<iframe src="https://www.youtube.com/embed/oLEWz1r5zcI?autoplay=1&rel=0&playsinline=1" ' +
-      'allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="Canción"></iframe>';
+  // Abrir carta: sello se rompe, destello, el pergamino se desenrolla, suena la música
+  let playing = true;
+  const bgm = () => document.getElementById('bgm');
+  const cmd = f => bgm().contentWindow.postMessage(JSON.stringify({event:'command',func:f,args:[]}), '*');
+  document.getElementById('open').addEventListener('click', e => {
+    const seal = e.currentTarget; seal.disabled = true;
+    seal.classList.add('break');
+    document.getElementById('gate').classList.add('leaving');
+    // la música arranca con el gesto del usuario
+    const f = document.createElement('iframe');
+    f.id = 'bgm'; f.allow = 'autoplay; encrypted-media'; f.title = 'Música';
+    f.src = 'https://www.youtube.com/embed/oLEWz1r5zcI?autoplay=1&loop=1&playlist=oLEWz1r5zcI&controls=0&enablejsapi=1&playsinline=1';
+    document.body.appendChild(f);
+    setTimeout(() => document.getElementById('flash').classList.add('go'), 500);
+    setTimeout(() => {
+      document.getElementById('gate').classList.add('gone');
+      document.body.classList.remove('locked');
+      window.scrollTo(0, 0);
+      document.querySelector('.scroll').classList.add('unroll');
+      document.getElementById('letter').classList.add('show');
+      document.getElementById('mute').classList.add('on');
+    }, 1000);
+  });
+  document.getElementById('mute').addEventListener('click', e => {
+    playing = !playing; cmd(playing ? 'playVideo' : 'pauseVideo');
+    e.currentTarget.style.textDecoration = playing ? 'none' : 'line-through';
   });
 
   // Versos que aparecen al desplazarse
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
   }), { threshold: .25 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  document.querySelectorAll('.reveal, .photo').forEach(el => io.observe(el));
 </script>
 </body>
 </html>
